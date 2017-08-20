@@ -52,5 +52,6 @@ target_include_directories(qxtglobalshortcut5 PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/core"
     "${CMAKE_CURRENT_SOURCE_DIR}/gui") # TODO: use properties
 target_link_libraries(qxtglobalshortcut5 ${qxtglobalshortcut5_LIBS})
+target_compile_definitions(qxtglobalshortcut5 PUBLIC QXT_STATIC=1)
 
 
