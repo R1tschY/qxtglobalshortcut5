@@ -1,5 +1,6 @@
 project(qxtglobalshortcut5 CXX)
 
+# Qt
 
 find_package(Qt5Widgets REQUIRED)
 include_directories(${Qt5Gui_PRIVATE_INCLUDE_DIRS})
@@ -10,7 +11,10 @@ if(UNIX AND NOT APPLE)
   list(APPEND qxtglobalshortcut5_LIBS Qt5::X11Extras X11)
 endif()
 
-add_definitions(-DBUILD_QXT_CORE -DBUILD_QXT_GUI -DQXT_STATIC) # TODO: use properties
+# TODO: use properties
+add_definitions(-DBUILD_QXT_CORE -DBUILD_QXT_GUI -DQXT_STATIC)
+
+# sources
 
 set(qxtglobalshortcut5_HEADERS
   "${CMAKE_CURRENT_SOURCE_DIR}/core/qxtglobal.h"
@@ -47,8 +51,22 @@ elseif(WIN32)
         "${CMAKE_CURRENT_SOURCE_DIR}/gui/qxtglobalshortcut_win.cpp")
 endif()
 
-add_library(qxtglobalshortcut5 STATIC ${qxtglobalshortcut5_SOURCES})
-target_include_directories(qxtglobalshortcut5 PUBLIC
+# moc
+
+include_directories(${PROJECT_SOURCE_DIR})
+include_directories(${PROJECT_BINARY_DIR})
+
+qt5_wrap_cpp(
+    qxtglobalshortcut5_MOC_SOURCES
+    "${CMAKE_CURRENT_SOURCE_DIR}/gui/qxtglobalshortcut.h")
+    
+# library
+
+add_library(
+    qxtglobalshortcut5 STATIC 
+    ${qxtglobalshortcut5_SOURCES} ${qxtglobalshortcut5_MOC_SOURCES})
+target_include_directories(
+    qxtglobalshortcut5 PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/core"
     "${CMAKE_CURRENT_SOURCE_DIR}/gui") # TODO: use properties
 target_link_libraries(qxtglobalshortcut5 ${qxtglobalshortcut5_LIBS})
