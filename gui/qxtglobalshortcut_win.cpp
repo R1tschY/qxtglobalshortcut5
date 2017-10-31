@@ -76,6 +76,32 @@ quint32 QxtGlobalShortcutPrivate::nativeModifiers(Qt::KeyboardModifiers modifier
     return native;
 }
 
+static wchar_t keyToCharacter(Qt::Key key)
+{
+    if (Qt::Key_Space <= key && key <= Qt::Key_AsciiTilde)
+    {
+      // key in ascii space
+      return static_cast<wchar_t>(key);
+    }
+
+    // TODO: map non-ascii character
+
+    return 0;
+}
+
+static quint32 translateKeycode(Qt::Key key)
+{
+  wchar_t c = keyToCharacter(key);
+  if (c == 0)
+    return 0;
+
+  quint16 vkey = VkKeyScanEx(c, GetKeyboardLayout(0));
+  if (vkey == -1)
+    return 0;
+
+  return vkey;
+}
+
 quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
 {
     switch (key)
@@ -237,7 +263,7 @@ quint32 QxtGlobalShortcutPrivate::nativeKeycode(Qt::Key key)
         return key;
 
     default:
-        return 0;
+        return translateKeycode(key);
     }
 }
 
